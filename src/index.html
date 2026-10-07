@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Campus Club & Travel Buddy</title>
+<style>
+body{font-family:Arial;max-width:700px;margin:20px auto}
+section{border:1px solid #ccc;padding:15px;margin:15px 0}
+input,button{padding:8px;margin:4px;width:90%}
+button{background:#1976d2;color:white;border:0}
+</style>
+</head>
+<body>
+
+<h1>Campus Club & Travel Buddy</h1>
+
+<section>
+<h2>Campus Club Member</h2>
+<form action="/members" method="post">
+<input name="memberId" placeholder="Member ID" required>
+<input name="name" placeholder="Name" required>
+<input name="clubName" placeholder="Club Name" required>
+<input name="year" type="number" placeholder="Year" required>
+<input name="role" placeholder="Role" required>
+<input name="points" type="number" placeholder="Points" required>
+<input name="interests" placeholder="Interests">
+<input name="status" placeholder="Status">
+<button>Add Member</button>
+</form>
+
+<h3>Search / Delete Member</h3>
+<form onsubmit="searchMember(event)">
+<input id="mid" placeholder="Member ID" required>
+<button>Search</button>
+</form>
+<div id="memberResult"></div>
+</section>
+
+<section>
+<h2>Travel Buddy Finder</h2>
+<form action="/buddies" method="post">
+<input name="buddyId" placeholder="Buddy ID" required>
+<input name="name" placeholder="Name" required>
+<input name="destination" placeholder="Destination" required>
+<input name="age" type="number" placeholder="Age" required>
+<input name="budget" type="number" placeholder="Budget" required>
+<input name="tripDuration" type="number" placeholder="Trip Duration" required>
+<input name="interests" placeholder="Interests">
+<input name="status" placeholder="Status">
+<button>Add Travel Buddy</button>
+</form>
+
+<h3>Search / Delete Buddy</h3>
+<form onsubmit="searchBuddy(event)">
+<input id="bid" placeholder="Buddy ID" required>
+<button>Search</button>
+</form>
+<div id="buddyResult"></div>
+</section>
+
+<script>
+async function searchMember(e){
+e.preventDefault();
+let id=mid.value,r=await fetch("/members/search/"+id),d=await r.json();
+memberResult.innerHTML=d?
+`Name: ${d.name}<br>Club: ${d.clubName}<br>Role: ${d.role}<br>Points: ${d.points}
+<br><button onclick="del('/members/${id}')">Delete</button>`:"Member not found";
+}
+
+async function searchBuddy(e){
+e.preventDefault();
+let id=bid.value,r=await fetch("/buddies/search/"+id),d=await r.json();
+buddyResult.innerHTML=d?
+`Name: ${d.name}<br>Destination: ${d.destination}<br>Budget: ${d.budget}<br>Duration: ${d.tripDuration}
+<br><button onclick="del('/buddies/${id}')">Delete</button>`:"Buddy not found";
+}
+
+async function del(url){
+await fetch(url,{method:"DELETE"});
+alert("Deleted successfully");
+location.reload();
+}
+</script>
+
+</body>
+</html>
